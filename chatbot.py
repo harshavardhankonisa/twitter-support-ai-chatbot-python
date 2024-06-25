@@ -68,6 +68,9 @@ class CustomerSupportAIAgent:
         self.history.append({"role": "system", "content": formatted_prompt})
         return completion.choices[0].message.content
 
+    def history(self):
+        return self.history
+
     def vector_search(self, prompt: str) -> pymongo.command_cursor.CommandCursor:
         """
         Perform a vector search on the specified collection by vectorizing

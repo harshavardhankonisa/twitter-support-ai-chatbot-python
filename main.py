@@ -5,7 +5,7 @@ API entrypoint for backend API.
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from chatbot import CustomerSupportAIAgent
-from models.request import ChatBotRequest
+from models.request import ChatBotRequest, HistoryRequest
 
 app = FastAPI()
 
@@ -43,6 +43,22 @@ def run_customer_support_ai_agent(request: ChatBotRequest):
     try:
         response_message = agent_instance.run(request.prompt)
         return {"message": response_message}
+    except Exception as e:
+        # Handle any potential errors gracefully
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/history")
+def run_customer_history(request: HistoryRequest):
+    """
+    Run the Cosmic Works AI agent.
+    """
+    if request.session_id not in agent_pool:
+        return []
+    agent_instance = agent_pool[request.session_id]
+    try:
+        response_history = agent_instance.history()
+        return response_history
     except Exception as e:
         # Handle any potential errors gracefully
         raise HTTPException(status_code=500, detail=str(e))
