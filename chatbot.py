@@ -63,12 +63,14 @@ class CustomerSupportAIAgent:
             messages=messages, model=COMPLETIONS_DEPLOYMENT
         )
         self.history.append({"sender": "user", "text": prompt})
-        self.history.append({"sender": "bot", "text": completion.choices[0].message.content})
+        self.history.append(
+            {"sender": "bot", "text": completion.choices[0].message.content}
+        )
         return completion.choices[0].message.content
 
     def get_history(self):
         return self.history
-    
+
     def clear_history(self):
         self.history = []
 

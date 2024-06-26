@@ -54,17 +54,20 @@ def run_customer_history(request: HistoryRequest):
     Run the Cosmic Works AI agent.
     """
     session_id = request.session_id
-    
+
     if session_id not in agent_pool:
         raise HTTPException(status_code=404, detail="Session ID not found")
-    
+
     try:
         agent_instance = agent_pool[session_id]
         history = agent_instance.get_history()
         return history
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch history: {str(e)}")
-    
+        raise HTTPException(
+            status_code=500, detail=f"Failed to fetch history: {str(e)}"
+        )
+
+
 @app.post("/clear-history")
 def run_customer_clear_history(request: HistoryRequest):
     """
