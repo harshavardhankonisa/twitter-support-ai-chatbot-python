@@ -62,11 +62,11 @@ class CustomerSupportAIAgent:
         completion = self.ai_client.chat.completions.create(
             messages=messages, model=COMPLETIONS_DEPLOYMENT
         )
-        self.history.append({"role": "user", "content": prompt})
-        self.history.append({"role": "system", "content": completion.choices[0].message.content})
+        self.history.append({"sender": "user", "text": prompt})
+        self.history.append({"sender": "bot", "text": completion.choices[0].message.content})
         return completion.choices[0].message.content
 
-    def history(self):
+    def get_history(self):
         return self.history
     
     def clear_history(self):
