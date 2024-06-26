@@ -42,8 +42,6 @@ class CustomerSupportAIAgent:
         If you have a question that falls outside of our usual support topics, I may respond with "I don't have that information."
         List of support topics:
         """
-
-        self.history.append({"role": "user", "content": prompt})
         search_results = self.vector_search(prompt)
 
         # Creating LLM Prompt from search results
@@ -64,12 +62,15 @@ class CustomerSupportAIAgent:
         completion = self.ai_client.chat.completions.create(
             messages=messages, model=COMPLETIONS_DEPLOYMENT
         )
-
-        self.history.append({"role": "system", "content": formatted_prompt})
+        self.history.append({"role": "user", "content": prompt})
+        self.history.append({"role": "system", "content": completion.choices[0].message.content})
         return completion.choices[0].message.content
 
     def history(self):
         return self.history
+    
+    def clear_history(self):
+        self.history = []
 
     def vector_search(self, prompt: str) -> pymongo.command_cursor.CommandCursor:
         """

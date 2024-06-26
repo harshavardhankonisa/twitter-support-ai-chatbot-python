@@ -48,7 +48,7 @@ def run_customer_support_ai_agent(request: ChatBotRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/history")
+@app.post("/fetch-history")
 def run_customer_history(request: HistoryRequest):
     """
     Run the Cosmic Works AI agent.
@@ -59,6 +59,21 @@ def run_customer_history(request: HistoryRequest):
     try:
         response_history = agent_instance.history()
         return response_history
+    except Exception as e:
+        # Handle any potential errors gracefully
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/clear-history")
+def run_customer_clear_history(request: HistoryRequest):
+    """
+    Run the Cosmic Works AI agent.
+    """
+    if request.session_id not in agent_pool:
+        raise HTTPException(status_code=404, detail="Session ID not found")
+    agent_instance = agent_pool[request.session_id]
+    try:
+        agent_instance.clear_history()
+        return {"detail": "History Cleared Successfully"}
     except Exception as e:
         # Handle any potential errors gracefully
         raise HTTPException(status_code=500, detail=str(e))
